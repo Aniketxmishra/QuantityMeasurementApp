@@ -299,6 +299,104 @@ public class QuantityMeasurementAppTest {
         QuantityMeasurementApp.QuantityLength result = QuantityMeasurementApp.add(q1, q2);
         assertEquals(new QuantityMeasurementApp.QuantityLength(2e6, QuantityMeasurementApp.LengthUnit.FEET), result);
     }
+    // ========== UC7: ADDITION WITH TARGET UNIT ==========
+
+    @Test
+    public void givenFeetAndInches_WhenAddedWithTargetFeet_ShouldReturnTwoFeet() {
+        QuantityMeasurementApp.QuantityLength q1 = new QuantityMeasurementApp.QuantityLength(1.0, QuantityMeasurementApp.LengthUnit.FEET);
+        QuantityMeasurementApp.QuantityLength q2 = new QuantityMeasurementApp.QuantityLength(12.0, QuantityMeasurementApp.LengthUnit.INCH);
+        QuantityMeasurementApp.QuantityLength result = QuantityMeasurementApp.add(q1, q2, QuantityMeasurementApp.LengthUnit.FEET);
+        assertEquals(new QuantityMeasurementApp.QuantityLength(2.0, QuantityMeasurementApp.LengthUnit.FEET), result);
+    }
+
+    @Test
+    public void givenFeetAndInches_WhenAddedWithTargetInches_ShouldReturnTwentyFourInches() {
+        QuantityMeasurementApp.QuantityLength q1 = new QuantityMeasurementApp.QuantityLength(1.0, QuantityMeasurementApp.LengthUnit.FEET);
+        QuantityMeasurementApp.QuantityLength q2 = new QuantityMeasurementApp.QuantityLength(12.0, QuantityMeasurementApp.LengthUnit.INCH);
+        QuantityMeasurementApp.QuantityLength result = QuantityMeasurementApp.add(q1, q2, QuantityMeasurementApp.LengthUnit.INCH);
+        assertEquals(new QuantityMeasurementApp.QuantityLength(24.0, QuantityMeasurementApp.LengthUnit.INCH), result);
+    }
+
+    @Test
+    public void givenFeetAndInches_WhenAddedWithTargetYards_ShouldReturnPointSixSixSeven() {
+        QuantityMeasurementApp.QuantityLength q1 = new QuantityMeasurementApp.QuantityLength(1.0, QuantityMeasurementApp.LengthUnit.FEET);
+        QuantityMeasurementApp.QuantityLength q2 = new QuantityMeasurementApp.QuantityLength(12.0, QuantityMeasurementApp.LengthUnit.INCH);
+        QuantityMeasurementApp.QuantityLength result = QuantityMeasurementApp.add(q1, q2, QuantityMeasurementApp.LengthUnit.YARD);
+        assertEquals(2.0 / 3.0, result.value, 1e-4);
+    }
+
+    @Test
+    public void givenTwoInchPlusOneInch_WhenAddedWithTargetCentimeters_ShouldReturnFivePointZeroEight() {
+        QuantityMeasurementApp.QuantityLength q1 = new QuantityMeasurementApp.QuantityLength(1.0, QuantityMeasurementApp.LengthUnit.INCH);
+        QuantityMeasurementApp.QuantityLength q2 = new QuantityMeasurementApp.QuantityLength(1.0, QuantityMeasurementApp.LengthUnit.INCH);
+        QuantityMeasurementApp.QuantityLength result = QuantityMeasurementApp.add(q1, q2, QuantityMeasurementApp.LengthUnit.CENTIMETER);
+        assertEquals(5.08, result.value, 1e-2);
+    }
+
+    @Test
+    public void givenTwoYardsPlusThreeFeet_WhenAddedWithTargetYards_ShouldReturnThreeYards() {
+        QuantityMeasurementApp.QuantityLength q1 = new QuantityMeasurementApp.QuantityLength(2.0, QuantityMeasurementApp.LengthUnit.YARD);
+        QuantityMeasurementApp.QuantityLength q2 = new QuantityMeasurementApp.QuantityLength(3.0, QuantityMeasurementApp.LengthUnit.FEET);
+        QuantityMeasurementApp.QuantityLength result = QuantityMeasurementApp.add(q1, q2, QuantityMeasurementApp.LengthUnit.YARD);
+        assertEquals(new QuantityMeasurementApp.QuantityLength(3.0, QuantityMeasurementApp.LengthUnit.YARD), result);
+    }
+
+    @Test
+    public void givenTwoYardsPlusThreeFeet_WhenAddedWithTargetFeet_ShouldReturnNineFeet() {
+        QuantityMeasurementApp.QuantityLength q1 = new QuantityMeasurementApp.QuantityLength(2.0, QuantityMeasurementApp.LengthUnit.YARD);
+        QuantityMeasurementApp.QuantityLength q2 = new QuantityMeasurementApp.QuantityLength(3.0, QuantityMeasurementApp.LengthUnit.FEET);
+        QuantityMeasurementApp.QuantityLength result = QuantityMeasurementApp.add(q1, q2, QuantityMeasurementApp.LengthUnit.FEET);
+        assertEquals(new QuantityMeasurementApp.QuantityLength(9.0, QuantityMeasurementApp.LengthUnit.FEET), result);
+    }
+
+    @Test
+    public void givenAddition_WhenTargetUnitSpecified_ShouldBeCommutative() {
+        QuantityMeasurementApp.QuantityLength q1 = new QuantityMeasurementApp.QuantityLength(1.0, QuantityMeasurementApp.LengthUnit.FEET);
+        QuantityMeasurementApp.QuantityLength q2 = new QuantityMeasurementApp.QuantityLength(12.0, QuantityMeasurementApp.LengthUnit.INCH);
+        QuantityMeasurementApp.QuantityLength r1 = QuantityMeasurementApp.add(q1, q2, QuantityMeasurementApp.LengthUnit.YARD);
+        QuantityMeasurementApp.QuantityLength r2 = QuantityMeasurementApp.add(q2, q1, QuantityMeasurementApp.LengthUnit.YARD);
+        assertEquals(r1, r2);
+    }
+
+    @Test
+    public void givenFiveFeetPlusZeroInches_WhenAddedWithTargetYards_ShouldReturnOnePointSixSeven() {
+        QuantityMeasurementApp.QuantityLength q1 = new QuantityMeasurementApp.QuantityLength(5.0, QuantityMeasurementApp.LengthUnit.FEET);
+        QuantityMeasurementApp.QuantityLength q2 = new QuantityMeasurementApp.QuantityLength(0.0, QuantityMeasurementApp.LengthUnit.INCH);
+        QuantityMeasurementApp.QuantityLength result = QuantityMeasurementApp.add(q1, q2, QuantityMeasurementApp.LengthUnit.YARD);
+        assertEquals(5.0 / 3.0, result.value, 1e-4);
+    }
+
+    @Test
+    public void givenFiveFeetPlusNegativeTwoFeet_WhenAddedWithTargetInches_ShouldReturnThirtySixInches() {
+        QuantityMeasurementApp.QuantityLength q1 = new QuantityMeasurementApp.QuantityLength(5.0, QuantityMeasurementApp.LengthUnit.FEET);
+        QuantityMeasurementApp.QuantityLength q2 = new QuantityMeasurementApp.QuantityLength(-2.0, QuantityMeasurementApp.LengthUnit.FEET);
+        QuantityMeasurementApp.QuantityLength result = QuantityMeasurementApp.add(q1, q2, QuantityMeasurementApp.LengthUnit.INCH);
+        assertEquals(new QuantityMeasurementApp.QuantityLength(36.0, QuantityMeasurementApp.LengthUnit.INCH), result);
+    }
+
+    @Test
+    public void givenNullTargetUnit_WhenAdded_ShouldThrowException() {
+        QuantityMeasurementApp.QuantityLength q1 = new QuantityMeasurementApp.QuantityLength(1.0, QuantityMeasurementApp.LengthUnit.FEET);
+        QuantityMeasurementApp.QuantityLength q2 = new QuantityMeasurementApp.QuantityLength(12.0, QuantityMeasurementApp.LengthUnit.INCH);
+        assertThrows(IllegalArgumentException.class, () -> QuantityMeasurementApp.add(q1, q2, null));
+    }
+
+    @Test
+    public void givenLargeToSmallScale_WhenAddedWithTargetInches_ShouldReturnCorrect() {
+        QuantityMeasurementApp.QuantityLength q1 = new QuantityMeasurementApp.QuantityLength(1000.0, QuantityMeasurementApp.LengthUnit.FEET);
+        QuantityMeasurementApp.QuantityLength q2 = new QuantityMeasurementApp.QuantityLength(500.0, QuantityMeasurementApp.LengthUnit.FEET);
+        QuantityMeasurementApp.QuantityLength result = QuantityMeasurementApp.add(q1, q2, QuantityMeasurementApp.LengthUnit.INCH);
+        assertEquals(new QuantityMeasurementApp.QuantityLength(18000.0, QuantityMeasurementApp.LengthUnit.INCH), result);
+    }
+
+    @Test
+    public void givenTwelveInchesPlusTwelveInches_WhenAddedWithTargetYards_ShouldReturnPointSixSeven() {
+        QuantityMeasurementApp.QuantityLength q1 = new QuantityMeasurementApp.QuantityLength(12.0, QuantityMeasurementApp.LengthUnit.INCH);
+        QuantityMeasurementApp.QuantityLength q2 = new QuantityMeasurementApp.QuantityLength(12.0, QuantityMeasurementApp.LengthUnit.INCH);
+        QuantityMeasurementApp.QuantityLength result = QuantityMeasurementApp.add(q1, q2, QuantityMeasurementApp.LengthUnit.YARD);
+        assertEquals(2.0 / 3.0, result.value, 1e-4);
+    }
+
 
 
 

@@ -70,6 +70,20 @@ public class QuantityMeasurementApp {
         double resultValue = sumInBase / q1.unit.getConversionFactor();
         return new QuantityLength(resultValue, q1.unit);
     }
+    /**
+     * Overloaded add: result expressed in explicitly specified targetUnit.
+     * @throws IllegalArgumentException for null operands or null targetUnit
+     */
+    public static QuantityLength add(QuantityLength q1, QuantityLength q2, LengthUnit targetUnit) {
+        if (q1 == null || q2 == null)
+            throw new IllegalArgumentException("Operands cannot be null");
+        if (targetUnit == null)
+            throw new IllegalArgumentException("Target unit cannot be null");
+        double sumInBase = q1.toBaseUnit() + q2.toBaseUnit();
+        double resultValue = sumInBase / targetUnit.getConversionFactor();
+        return new QuantityLength(resultValue, targetUnit);
+    }
+
 
     public static void demonstrateLengthConversion(double value, LengthUnit from, LengthUnit to) {
         double result = convert(value, from, to);
