@@ -2,7 +2,7 @@ package com.quantitymeasurement;
 
 public class QuantityMeasurementApp {
 
-    private static final double EPSILON = 1e-6;
+    private static final double EPSILON = 1e-4;
 
 
 
@@ -85,6 +85,7 @@ public class QuantityMeasurementApp {
     }
 
     public static void main(String[] args) {
+        // Length demos
         demonstrateLengthConversion(1.0, LengthUnit.FEET, LengthUnit.INCH);
         demonstrateLengthConversion(1.0, LengthUnit.YARD, LengthUnit.INCH);
         demonstrateLengthConversion(1.0, LengthUnit.CENTIMETER, LengthUnit.INCH);
@@ -93,7 +94,12 @@ public class QuantityMeasurementApp {
                 new QuantityLength(1.0, LengthUnit.FEET),
                 new QuantityLength(12.0, LengthUnit.INCH)
         );
-        System.out.println(add(new QuantityLength(1.0, LengthUnit.FEET), new QuantityLength(12.0, LengthUnit.INCH)));
-        System.out.println(add(new QuantityLength(1.0, LengthUnit.YARD), new QuantityLength(3.0, LengthUnit.FEET)));
+        // Weight demos
+        System.out.println("1 kg = 1000 g? " +
+                new QuantityWeight(1.0, WeightUnit.KILOGRAM).equals(new QuantityWeight(1000.0, WeightUnit.GRAM)));
+        System.out.println(QuantityWeight.add(
+                new QuantityWeight(1.0, WeightUnit.KILOGRAM),
+                new QuantityWeight(1000.0, WeightUnit.GRAM)));
     }
+
 }
