@@ -1,10 +1,8 @@
 package com.quantitymeasurement;
 
-/**
- * QuantityMeasurementApp provides length measurement comparison and conversion.
- * Supports FEET, INCH, YARD, CENTIMETER units via the LengthUnit enum.
- */
 public class QuantityMeasurementApp {
+
+    private static final double EPSILON = 1e-6;
 
     public enum LengthUnit {
         FEET(1.0),
@@ -23,12 +21,9 @@ public class QuantityMeasurementApp {
         }
     }
 
-    /**
-     * Represents an immutable length measurement with a value and unit.
-     */
     public static class QuantityLength {
-        private final double value;
-        private final LengthUnit unit;
+        final double value;
+        final LengthUnit unit;
 
         public QuantityLength(double value, LengthUnit unit) {
             if (unit == null) throw new IllegalArgumentException("Unit cannot be null");
@@ -36,13 +31,10 @@ public class QuantityMeasurementApp {
             this.unit = unit;
         }
 
-        private double toBaseUnit() {
+        double toBaseUnit() {
             return value * unit.getConversionFactor();
         }
 
-        /**
-         * Converts this measurement to the target unit and returns a new QuantityLength.
-         */
         public QuantityLength convertTo(LengthUnit targetUnit) {
             if (targetUnit == null) throw new IllegalArgumentException("Target unit cannot be null");
             double converted = this.toBaseUnit() / targetUnit.getConversionFactor();
@@ -54,7 +46,7 @@ public class QuantityMeasurementApp {
             if (this == obj) return true;
             if (obj == null || getClass() != obj.getClass()) return false;
             QuantityLength other = (QuantityLength) obj;
-            return Double.compare(this.toBaseUnit(), other.toBaseUnit()) == 0;
+            return Math.abs(this.toBaseUnit() - other.toBaseUnit()) < EPSILON;
         }
 
         @Override
@@ -63,10 +55,6 @@ public class QuantityMeasurementApp {
         }
     }
 
-    /**
-     * Static conversion: converts value from sourceUnit to targetUnit.
-     * @throws IllegalArgumentException for null units or non-finite values
-     */
     public static double convert(double value, LengthUnit sourceUnit, LengthUnit targetUnit) {
         if (sourceUnit == null || targetUnit == null)
             throw new IllegalArgumentException("Units cannot be null");
@@ -75,13 +63,19 @@ public class QuantityMeasurementApp {
         return new QuantityLength(value, sourceUnit).convertTo(targetUnit).value;
     }
 
-    // Overloaded: demonstrate conversion from raw value
+    public static QuantityLength add(QuantityLength q1, QuantityLength q2) {
+        if (q1 == null || q2 == null)
+            throw new IllegalArgumentException("Operands cannot be null");
+        double sumInBase = q1.toBaseUnit() + q2.toBaseUnit();
+        double resultValue = sumInBase / q1.unit.getConversionFactor();
+        return new QuantityLength(resultValue, q1.unit);
+    }
+
     public static void demonstrateLengthConversion(double value, LengthUnit from, LengthUnit to) {
         double result = convert(value, from, to);
         System.out.printf("%.4f %s = %.4f %s%n", value, from, result, to);
     }
 
-    // Overloaded: demonstrate conversion from existing QuantityLength instance
     public static void demonstrateLengthConversion(QuantityLength length, LengthUnit to) {
         QuantityLength result = length.convertTo(to);
         System.out.println(length + " = " + result);
@@ -100,5 +94,7 @@ public class QuantityMeasurementApp {
                 new QuantityLength(1.0, LengthUnit.FEET),
                 new QuantityLength(12.0, LengthUnit.INCH)
         );
+        System.out.println(add(new QuantityLength(1.0, LengthUnit.FEET), new QuantityLength(12.0, LengthUnit.INCH)));
+        System.out.println(add(new QuantityLength(1.0, LengthUnit.YARD), new QuantityLength(3.0, LengthUnit.FEET)));
     }
 }
