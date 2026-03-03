@@ -122,6 +122,23 @@ public class QuantityMeasurementApp {
         demonstrateDivision(
                 new Quantity<>(10.0, WeightUnit.KILOGRAM),
                 new Quantity<>(5.0, WeightUnit.KILOGRAM));
+        // Temperature demos
+        demonstrateEquality(
+                new Quantity<>(0.0, TemperatureUnit.CELSIUS),
+                new Quantity<>(32.0, TemperatureUnit.FAHRENHEIT));
+        demonstrateEquality(
+                new Quantity<>(100.0, TemperatureUnit.CELSIUS),
+                new Quantity<>(212.0, TemperatureUnit.FAHRENHEIT));
+        demonstrateConversion(
+                new Quantity<>(100.0, TemperatureUnit.CELSIUS),
+                TemperatureUnit.FAHRENHEIT);
+        demonstrateConversion(
+                new Quantity<>(273.15, TemperatureUnit.KELVIN),
+                TemperatureUnit.CELSIUS);
+        demonstrateConversion(
+                new Quantity<>(0.0, TemperatureUnit.CELSIUS),
+                TemperatureUnit.KELVIN);
+
     }
 
     public static <U extends IMeasurable> void demonstrateSubtraction(Quantity<U> q1, Quantity<U> q2, U targetUnit) {

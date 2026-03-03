@@ -53,10 +53,12 @@ public class Quantity<U extends IMeasurable> {
 
     // ===== PRIVATE: Centralized Arithmetic =====
     private double performBaseArithmetic(Quantity<U> other, ArithmeticOperation operation) {
+        this.unit.validateOperationSupport(operation.name()); // NEW LINE
         double thisBase = this.unit.convertToBaseUnit(this.value);
         double otherBase = other.unit.convertToBaseUnit(other.value);
         return operation.compute(thisBase, otherBase);
     }
+
 
     private static double roundToTwoDecimals(double value) {
         return Math.round(value * 100.0) / 100.0;
@@ -65,9 +67,11 @@ public class Quantity<U extends IMeasurable> {
     // ===== PUBLIC: convertTo =====
     public Quantity<U> convertTo(U targetUnit) {
         if (targetUnit == null) throw new IllegalArgumentException("Target unit cannot be null");
-        double converted = targetUnit.convertFromBaseUnit(this.toBaseUnit());
+        double baseValue = this.unit.convertToBaseUnit(this.value);
+        double converted = targetUnit.convertFromBaseUnit(baseValue);
         return new Quantity<>(converted, targetUnit);
     }
+
 
     // ===== PUBLIC: Addition =====
     public Quantity<U> add(Quantity<U> other) {
