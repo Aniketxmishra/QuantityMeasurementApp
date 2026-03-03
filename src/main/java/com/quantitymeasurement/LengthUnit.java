@@ -1,10 +1,6 @@
 package com.quantitymeasurement;
 
-/**
- * Standalone enum representing length units with full conversion responsibility.
- * Conversion factor is defined as feet-per-unit (base unit = FEET).
- */
-public enum LengthUnit {
+public enum LengthUnit implements IMeasurable {
     FEET(1.0),
     INCH(1.0 / 12.0),
     YARD(3.0),
@@ -16,17 +12,11 @@ public enum LengthUnit {
         this.conversionFactor = conversionFactor;
     }
 
-    public double getConversionFactor() {
-        return conversionFactor;
-    }
+    @Override public double getConversionFactor() { return conversionFactor; }
 
-    /** Converts a value in this unit to the base unit (feet). */
-    public double convertToBaseUnit(double value) {
-        return value * conversionFactor;
-    }
+    @Override public double convertToBaseUnit(double value) { return value * conversionFactor; }
 
-    /** Converts a value from the base unit (feet) to this unit. */
-    public double convertFromBaseUnit(double baseValue) {
-        return baseValue / conversionFactor;
-    }
+    @Override public double convertFromBaseUnit(double baseValue) { return baseValue / conversionFactor; }
+
+    @Override public String getUnitName() { return name(); }
 }

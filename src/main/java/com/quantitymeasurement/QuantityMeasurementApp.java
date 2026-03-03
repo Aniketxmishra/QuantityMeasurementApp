@@ -1,11 +1,15 @@
 package com.quantitymeasurement;
 
+/**
+ * UC10: Simplified QuantityMeasurementApp using generic Quantity<U>.
+ * All category-specific methods replaced with single generic methods.
+ * QuantityLength and QuantityWeight kept as type aliases for backward compatibility.
+ */
 public class QuantityMeasurementApp {
 
-    private static final double EPSILON = 1e-4;
+    private static final double EPSILON = 1e-6;
 
-
-
+    // ===== BACKWARD COMPATIBILITY: QuantityLength as inner class wrapping Quantity<LengthUnit> =====
     public static class QuantityLength {
         final double value;
         final LengthUnit unit;
@@ -17,12 +21,12 @@ public class QuantityMeasurementApp {
         }
 
         double toBaseUnit() {
-            return value * unit.getConversionFactor();
+            return unit.convertToBaseUnit(value);
         }
 
         public QuantityLength convertTo(LengthUnit targetUnit) {
             if (targetUnit == null) throw new IllegalArgumentException("Target unit cannot be null");
-            double converted = this.toBaseUnit() / targetUnit.getConversionFactor();
+            double converted = targetUnit.convertFromBaseUnit(this.toBaseUnit());
             return new QuantityLength(converted, targetUnit);
         }
 
@@ -40,6 +44,7 @@ public class QuantityMeasurementApp {
         }
     }
 
+    // ===== LEGACY STATIC METHODS for UC1-UC9 backward compatibility =====
     public static double convert(double value, LengthUnit sourceUnit, LengthUnit targetUnit) {
         if (sourceUnit == null || targetUnit == null)
             throw new IllegalArgumentException("Units cannot be null");
@@ -52,54 +57,51 @@ public class QuantityMeasurementApp {
         if (q1 == null || q2 == null)
             throw new IllegalArgumentException("Operands cannot be null");
         double sumInBase = q1.toBaseUnit() + q2.toBaseUnit();
-        double resultValue = sumInBase / q1.unit.getConversionFactor();
-        return new QuantityLength(resultValue, q1.unit);
+        return new QuantityLength(q1.unit.convertFromBaseUnit(sumInBase), q1.unit);
     }
-    /**
-     * Overloaded add: result expressed in explicitly specified targetUnit.
-     * @throws IllegalArgumentException for null operands or null targetUnit
-     */
+
     public static QuantityLength add(QuantityLength q1, QuantityLength q2, LengthUnit targetUnit) {
         if (q1 == null || q2 == null)
             throw new IllegalArgumentException("Operands cannot be null");
         if (targetUnit == null)
             throw new IllegalArgumentException("Target unit cannot be null");
         double sumInBase = q1.toBaseUnit() + q2.toBaseUnit();
-        double resultValue = sumInBase / targetUnit.getConversionFactor();
-        return new QuantityLength(resultValue, targetUnit);
+        return new QuantityLength(targetUnit.convertFromBaseUnit(sumInBase), targetUnit);
     }
 
-
-    public static void demonstrateLengthConversion(double value, LengthUnit from, LengthUnit to) {
-        double result = convert(value, from, to);
-        System.out.printf("%.4f %s = %.4f %s%n", value, from, result, to);
-    }
-
-    public static void demonstrateLengthConversion(QuantityLength length, LengthUnit to) {
-        QuantityLength result = length.convertTo(to);
-        System.out.println(length + " = " + result);
-    }
-
-    public static void demonstrateLengthEquality(QuantityLength q1, QuantityLength q2) {
+    // ===== UC10: GENERIC DEMONSTRATION METHODS =====
+    public static <U extends IMeasurable> void demonstrateEquality(Quantity<U> q1, Quantity<U> q2) {
         System.out.println(q1 + " == " + q2 + " ? " + q1.equals(q2));
     }
 
-    public static void main(String[] args) {
-        // Length demos
-        demonstrateLengthConversion(1.0, LengthUnit.FEET, LengthUnit.INCH);
-        demonstrateLengthConversion(1.0, LengthUnit.YARD, LengthUnit.INCH);
-        demonstrateLengthConversion(1.0, LengthUnit.CENTIMETER, LengthUnit.INCH);
-        demonstrateLengthConversion(new QuantityLength(3.0, LengthUnit.FEET), LengthUnit.YARD);
-        demonstrateLengthEquality(
-                new QuantityLength(1.0, LengthUnit.FEET),
-                new QuantityLength(12.0, LengthUnit.INCH)
-        );
-        // Weight demos
-        System.out.println("1 kg = 1000 g? " +
-                new QuantityWeight(1.0, WeightUnit.KILOGRAM).equals(new QuantityWeight(1000.0, WeightUnit.GRAM)));
-        System.out.println(QuantityWeight.add(
-                new QuantityWeight(1.0, WeightUnit.KILOGRAM),
-                new QuantityWeight(1000.0, WeightUnit.GRAM)));
+    public static <U extends IMeasurable> void demonstrateConversion(Quantity<U> q, U targetUnit) {
+        System.out.println(q + " → " + q.convertTo(targetUnit));
     }
 
+    public static <U extends IMeasurable> void demonstrateAddition(Quantity<U> q1, Quantity<U> q2, U targetUnit) {
+        System.out.println(q1 + " + " + q2 + " = " + q1.add(q2, targetUnit));
+    }
+
+    public static void main(String[] args) {
+        // Length demos using generic Quantity<LengthUnit>
+        demonstrateConversion(new Quantity<>(1.0, LengthUnit.FEET), LengthUnit.INCH);
+        demonstrateConversion(new Quantity<>(1.0, LengthUnit.YARD), LengthUnit.INCH);
+        demonstrateEquality(
+                new Quantity<>(1.0, LengthUnit.FEET),
+                new Quantity<>(12.0, LengthUnit.INCH));
+        demonstrateAddition(
+                new Quantity<>(1.0, LengthUnit.FEET),
+                new Quantity<>(12.0, LengthUnit.INCH),
+                LengthUnit.FEET);
+
+        // Weight demos using generic Quantity<WeightUnit>
+        demonstrateEquality(
+                new Quantity<>(1.0, WeightUnit.KILOGRAM),
+                new Quantity<>(1000.0, WeightUnit.GRAM));
+        demonstrateConversion(new Quantity<>(1.0, WeightUnit.KILOGRAM), WeightUnit.GRAM);
+        demonstrateAddition(
+                new Quantity<>(1.0, WeightUnit.KILOGRAM),
+                new Quantity<>(1000.0, WeightUnit.GRAM),
+                WeightUnit.KILOGRAM);
+    }
 }
