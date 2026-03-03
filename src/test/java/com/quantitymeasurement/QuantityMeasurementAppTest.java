@@ -36,4 +36,38 @@ public class QuantityMeasurementAppTest {
         QuantityMeasurementApp.Feet f1 = new QuantityMeasurementApp.Feet(1.0);
         assertSame(f1, f1);
     }
+    // ========== INCH TESTS ==========
+
+    @Test
+    public void givenSameInchValue_WhenCompared_ShouldReturnEqual() {
+        QuantityMeasurementApp.Inch i1 = new QuantityMeasurementApp.Inch(1.0);
+        QuantityMeasurementApp.Inch i2 = new QuantityMeasurementApp.Inch(1.0);
+        assertEquals(i1, i2);
+    }
+
+    @Test
+    public void givenDifferentInchValue_WhenCompared_ShouldReturnNotEqual() {
+        QuantityMeasurementApp.Inch i1 = new QuantityMeasurementApp.Inch(1.0);
+        QuantityMeasurementApp.Inch i2 = new QuantityMeasurementApp.Inch(2.0);
+        assertNotEquals(i1, i2);
+    }
+
+    @Test
+    public void givenNullInchValue_WhenCompared_ShouldReturnNotEqual() {
+        QuantityMeasurementApp.Inch i1 = new QuantityMeasurementApp.Inch(1.0);
+        assertNotEquals(null, i1);
+    }
+
+    @Test
+    public void givenNonNumericInputForInch_WhenCompared_ShouldReturnNotEqual() {
+        QuantityMeasurementApp.Inch i1 = new QuantityMeasurementApp.Inch(1.0);
+        assertNotEquals("someString", i1);
+    }
+
+    @Test
+    public void givenSameInchReference_WhenCompared_ShouldReturnEqual() {
+        QuantityMeasurementApp.Inch i1 = new QuantityMeasurementApp.Inch(1.0);
+        assertSame(i1, i1);
+    }
+
 }
