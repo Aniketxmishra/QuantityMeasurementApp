@@ -83,25 +83,53 @@ public class QuantityMeasurementApp {
     }
 
     public static void main(String[] args) {
-        // Length demos using generic Quantity<LengthUnit>
+        // Length demos (existing + new)
         demonstrateConversion(new Quantity<>(1.0, LengthUnit.FEET), LengthUnit.INCH);
-        demonstrateConversion(new Quantity<>(1.0, LengthUnit.YARD), LengthUnit.INCH);
-        demonstrateEquality(
-                new Quantity<>(1.0, LengthUnit.FEET),
-                new Quantity<>(12.0, LengthUnit.INCH));
         demonstrateAddition(
                 new Quantity<>(1.0, LengthUnit.FEET),
                 new Quantity<>(12.0, LengthUnit.INCH),
                 LengthUnit.FEET);
+        demonstrateSubtraction(
+                new Quantity<>(10.0, LengthUnit.FEET),
+                new Quantity<>(6.0, LengthUnit.INCH),
+                LengthUnit.FEET);
+        demonstrateDivision(
+                new Quantity<>(24.0, LengthUnit.INCH),
+                new Quantity<>(2.0, LengthUnit.FEET));
 
-        // Weight demos using generic Quantity<WeightUnit>
-        demonstrateEquality(
-                new Quantity<>(1.0, WeightUnit.KILOGRAM),
-                new Quantity<>(1000.0, WeightUnit.GRAM));
-        demonstrateConversion(new Quantity<>(1.0, WeightUnit.KILOGRAM), WeightUnit.GRAM);
+        // Volume demos (existing + new)
+        demonstrateAddition(
+                new Quantity<>(1.0, VolumeUnit.LITRE),
+                new Quantity<>(1000.0, VolumeUnit.MILLILITRE),
+                VolumeUnit.LITRE);
+        demonstrateSubtraction(
+                new Quantity<>(5.0, VolumeUnit.LITRE),
+                new Quantity<>(500.0, VolumeUnit.MILLILITRE),
+                VolumeUnit.LITRE);
+        demonstrateDivision(
+                new Quantity<>(10.0, VolumeUnit.LITRE),
+                new Quantity<>(5.0, VolumeUnit.LITRE));
+
+        // Weight demos (existing + new)
         demonstrateAddition(
                 new Quantity<>(1.0, WeightUnit.KILOGRAM),
                 new Quantity<>(1000.0, WeightUnit.GRAM),
                 WeightUnit.KILOGRAM);
+        demonstrateSubtraction(
+                new Quantity<>(10.0, WeightUnit.KILOGRAM),
+                new Quantity<>(5000.0, WeightUnit.GRAM),
+                WeightUnit.KILOGRAM);
+        demonstrateDivision(
+                new Quantity<>(10.0, WeightUnit.KILOGRAM),
+                new Quantity<>(5.0, WeightUnit.KILOGRAM));
     }
+
+    public static <U extends IMeasurable> void demonstrateSubtraction(Quantity<U> q1, Quantity<U> q2, U targetUnit) {
+        System.out.println(q1 + " - " + q2 + " = " + q1.subtract(q2, targetUnit));
+    }
+
+    public static <U extends IMeasurable> void demonstrateDivision(Quantity<U> q1, Quantity<U> q2) {
+        System.out.println(q1 + " ÷ " + q2 + " = " + q1.divide(q2));
+    }
+
 }
