@@ -2,48 +2,47 @@ package com.quantitymeasurement;
 
 public class QuantityMeasurementApp {
 
-    public static class Feet {
-        private final double value;
+    public enum LengthUnit {
+        FEET(1.0),
+        INCH(1.0 / 12.0);
 
-        public Feet(double value) {
+        private final double conversionFactor;
+
+        LengthUnit(double conversionFactor) {
+            this.conversionFactor = conversionFactor;
+        }
+
+        public double getConversionFactor() {
+            return conversionFactor;
+        }
+    }
+
+    public static class QuantityLength {
+        private final double value;
+        private final LengthUnit unit;
+
+        public QuantityLength(double value, LengthUnit unit) {
+            if (unit == null) throw new IllegalArgumentException("Unit cannot be null");
             this.value = value;
+            this.unit = unit;
+        }
+
+        private double toBaseUnit() {
+            return value * unit.getConversionFactor();
         }
 
         @Override
         public boolean equals(Object obj) {
             if (this == obj) return true;
             if (obj == null || getClass() != obj.getClass()) return false;
-            Feet feet = (Feet) obj;
-            return Double.compare(this.value, feet.value) == 0;
+            QuantityLength other = (QuantityLength) obj;
+            return Double.compare(this.toBaseUnit(), other.toBaseUnit()) == 0;
         }
-    }
-
-    public static class Inch {
-        private final double value;
-
-        public Inch(double value) {
-            this.value = value;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj) return true;
-            if (obj == null || getClass() != obj.getClass()) return false;
-            Inch inch = (Inch) obj;
-            return Double.compare(this.value, inch.value) == 0;
-        }
-    }
-
-    public static boolean compareFeet(double a, double b) {
-        return new Feet(a).equals(new Feet(b));
-    }
-
-    public static boolean compareInch(double a, double b) {
-        return new Inch(a).equals(new Inch(b));
     }
 
     public static void main(String[] args) {
-        System.out.println("Feet equal? " + compareFeet(1.0, 1.0));
-        System.out.println("Inch equal? " + compareInch(1.0, 1.0));
+        QuantityLength q1 = new QuantityLength(1.0, LengthUnit.FEET);
+        QuantityLength q2 = new QuantityLength(12.0, LengthUnit.INCH);
+        System.out.println("1 foot == 12 inches? " + q1.equals(q2));
     }
 }
